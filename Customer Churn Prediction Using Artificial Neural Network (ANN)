@@ -1,0 +1,1950 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Untitled0.ipynb",
+      "provenance": [],
+      "toc_visible": true,
+      "authorship_tag": "ABX9TyMHpfwRMe0dQCSICbyi90hB",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/yash-web/greyatom-python-for-data-science/blob/master/Customer%20Churn%20Prediction%20Using%20Artificial%20Neural%20Network%20(ANN)\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "vFAEsdm3-Dlo"
+      },
+      "source": [
+        "import pandas as pd\r\n",
+        "from matplotlib import pyplot as plt\r\n",
+        "import numpy as np\r\n",
+        "%matplotlib inline"
+      ],
+      "execution_count": 83,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "iP7u1xS4-K6_"
+      },
+      "source": [
+        "df=pd.read_csv('sample_data/project1.csv')"
+      ],
+      "execution_count": 85,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 309
+        },
+        "id": "eB6XmoVx_Aly",
+        "outputId": "fddc7c33-b09b-4daa-f18f-d4a862b109d9"
+      },
+      "source": [
+        "df.head()"
+      ],
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>customerID</th>\n",
+              "      <th>gender</th>\n",
+              "      <th>SeniorCitizen</th>\n",
+              "      <th>Partner</th>\n",
+              "      <th>Dependents</th>\n",
+              "      <th>tenure</th>\n",
+              "      <th>PhoneService</th>\n",
+              "      <th>MultipleLines</th>\n",
+              "      <th>InternetService</th>\n",
+              "      <th>OnlineSecurity</th>\n",
+              "      <th>OnlineBackup</th>\n",
+              "      <th>DeviceProtection</th>\n",
+              "      <th>TechSupport</th>\n",
+              "      <th>StreamingTV</th>\n",
+              "      <th>StreamingMovies</th>\n",
+              "      <th>Contract</th>\n",
+              "      <th>PaperlessBilling</th>\n",
+              "      <th>PaymentMethod</th>\n",
+              "      <th>MonthlyCharges</th>\n",
+              "      <th>TotalCharges</th>\n",
+              "      <th>Churn</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>7590-VHVEG</td>\n",
+              "      <td>Female</td>\n",
+              "      <td>0</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>1</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No phone service</td>\n",
+              "      <td>DSL</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Month-to-month</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Electronic check</td>\n",
+              "      <td>29.85</td>\n",
+              "      <td>29.85</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>5575-GNVDE</td>\n",
+              "      <td>Male</td>\n",
+              "      <td>0</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>34</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>DSL</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>One year</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Mailed check</td>\n",
+              "      <td>56.95</td>\n",
+              "      <td>1889.5</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>3668-QPYBK</td>\n",
+              "      <td>Male</td>\n",
+              "      <td>0</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>2</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>DSL</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Month-to-month</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Mailed check</td>\n",
+              "      <td>53.85</td>\n",
+              "      <td>108.15</td>\n",
+              "      <td>Yes</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>7795-CFOCW</td>\n",
+              "      <td>Male</td>\n",
+              "      <td>0</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>45</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No phone service</td>\n",
+              "      <td>DSL</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>One year</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Bank transfer (automatic)</td>\n",
+              "      <td>42.30</td>\n",
+              "      <td>1840.75</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>9237-HQITU</td>\n",
+              "      <td>Female</td>\n",
+              "      <td>0</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>2</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Fiber optic</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Month-to-month</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Electronic check</td>\n",
+              "      <td>70.70</td>\n",
+              "      <td>151.65</td>\n",
+              "      <td>Yes</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "   customerID  gender  SeniorCitizen  ... MonthlyCharges TotalCharges  Churn\n",
+              "0  7590-VHVEG  Female              0  ...          29.85        29.85     No\n",
+              "1  5575-GNVDE    Male              0  ...          56.95       1889.5     No\n",
+              "2  3668-QPYBK    Male              0  ...          53.85       108.15    Yes\n",
+              "3  7795-CFOCW    Male              0  ...          42.30      1840.75     No\n",
+              "4  9237-HQITU  Female              0  ...          70.70       151.65    Yes\n",
+              "\n",
+              "[5 rows x 21 columns]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 7
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "DShb2-T1_PVr"
+      },
+      "source": [
+        "df.drop('customerID',axis=1,inplace=True)"
+      ],
+      "execution_count": 13,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Q3i3zs90I-f_",
+        "outputId": "74ebb1ba-c7b9-446e-98e1-6e214a7afaba"
+      },
+      "source": [
+        "df.dtypes"
+      ],
+      "execution_count": 15,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "gender               object\n",
+              "SeniorCitizen         int64\n",
+              "Partner              object\n",
+              "Dependents           object\n",
+              "tenure                int64\n",
+              "PhoneService         object\n",
+              "MultipleLines        object\n",
+              "InternetService      object\n",
+              "OnlineSecurity       object\n",
+              "OnlineBackup         object\n",
+              "DeviceProtection     object\n",
+              "TechSupport          object\n",
+              "StreamingTV          object\n",
+              "StreamingMovies      object\n",
+              "Contract             object\n",
+              "PaperlessBilling     object\n",
+              "PaymentMethod        object\n",
+              "MonthlyCharges      float64\n",
+              "TotalCharges         object\n",
+              "Churn                object\n",
+              "dtype: object"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 15
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "jiaXUz4wKSWw",
+        "outputId": "2326898e-2dae-40df-cee7-e9294d44f4bb"
+      },
+      "source": [
+        "pd.to_numeric(df.TotalCharges,errors='coerce')"
+      ],
+      "execution_count": 21,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0         29.85\n",
+              "1       1889.50\n",
+              "2        108.15\n",
+              "3       1840.75\n",
+              "4        151.65\n",
+              "         ...   \n",
+              "7038    1990.50\n",
+              "7039    7362.90\n",
+              "7040     346.45\n",
+              "7041     306.60\n",
+              "7042    6844.50\n",
+              "Name: TotalCharges, Length: 7043, dtype: float64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 21
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "jOiM7fdOKgzc",
+        "outputId": "d1efc256-30cb-453d-b283-be6794f12b6d"
+      },
+      "source": [
+        "pd.to_numeric(df.MonthlyCharges,errors='coerce')"
+      ],
+      "execution_count": 22,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0        29.85\n",
+              "1        56.95\n",
+              "2        53.85\n",
+              "3        42.30\n",
+              "4        70.70\n",
+              "         ...  \n",
+              "7038     84.80\n",
+              "7039    103.20\n",
+              "7040     29.60\n",
+              "7041     74.40\n",
+              "7042    105.65\n",
+              "Name: MonthlyCharges, Length: 7043, dtype: float64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 22
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "UoWlkHgLLD99"
+      },
+      "source": [
+        "df1=df[df['TotalCharges']!=' ']"
+      ],
+      "execution_count": 25,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "pXR7j9LULgFk",
+        "outputId": "4aa12937-f41e-4311-b511-2c5fa240b881"
+      },
+      "source": [
+        "df1.shape"
+      ],
+      "execution_count": 26,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "(7032, 20)"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 26
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xbchRlhnLhoi",
+        "outputId": "9b5970b6-483e-4519-c7ee-a9b0b2ed3a3e"
+      },
+      "source": [
+        "df1.TotalCharges=pd.to_numeric(df1['TotalCharges'])"
+      ],
+      "execution_count": 30,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "/usr/local/lib/python3.6/dist-packages/pandas/core/generic.py:5170: SettingWithCopyWarning: \n",
+            "A value is trying to be set on a copy of a slice from a DataFrame.\n",
+            "Try using .loc[row_indexer,col_indexer] = value instead\n",
+            "\n",
+            "See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n",
+            "  self[name] = value\n"
+          ],
+          "name": "stderr"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "e88NMKzyMBnr",
+        "outputId": "93f530b0-9df6-4524-d69d-d6d508268834"
+      },
+      "source": [
+        "df1.dtypes"
+      ],
+      "execution_count": 31,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "gender               object\n",
+              "SeniorCitizen         int64\n",
+              "Partner              object\n",
+              "Dependents           object\n",
+              "tenure                int64\n",
+              "PhoneService         object\n",
+              "MultipleLines        object\n",
+              "InternetService      object\n",
+              "OnlineSecurity       object\n",
+              "OnlineBackup         object\n",
+              "DeviceProtection     object\n",
+              "TechSupport          object\n",
+              "StreamingTV          object\n",
+              "StreamingMovies      object\n",
+              "Contract             object\n",
+              "PaperlessBilling     object\n",
+              "PaymentMethod        object\n",
+              "MonthlyCharges      float64\n",
+              "TotalCharges        float64\n",
+              "Churn                object\n",
+              "dtype: object"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 31
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "1tq5SIIhMU8Y",
+        "outputId": "71f9c76e-eb8f-4007-e8dd-68709164ce8c"
+      },
+      "source": [
+        "df1.shape"
+      ],
+      "execution_count": 33,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "(7032, 20)"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 33
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 292
+        },
+        "id": "vu1ocEa8Matd",
+        "outputId": "2088d151-f64f-44f6-dbbd-f7cdde611a39"
+      },
+      "source": [
+        "df1.head()"
+      ],
+      "execution_count": 34,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>gender</th>\n",
+              "      <th>SeniorCitizen</th>\n",
+              "      <th>Partner</th>\n",
+              "      <th>Dependents</th>\n",
+              "      <th>tenure</th>\n",
+              "      <th>PhoneService</th>\n",
+              "      <th>MultipleLines</th>\n",
+              "      <th>InternetService</th>\n",
+              "      <th>OnlineSecurity</th>\n",
+              "      <th>OnlineBackup</th>\n",
+              "      <th>DeviceProtection</th>\n",
+              "      <th>TechSupport</th>\n",
+              "      <th>StreamingTV</th>\n",
+              "      <th>StreamingMovies</th>\n",
+              "      <th>Contract</th>\n",
+              "      <th>PaperlessBilling</th>\n",
+              "      <th>PaymentMethod</th>\n",
+              "      <th>MonthlyCharges</th>\n",
+              "      <th>TotalCharges</th>\n",
+              "      <th>Churn</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>Female</td>\n",
+              "      <td>0</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>1</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No phone service</td>\n",
+              "      <td>DSL</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Month-to-month</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Electronic check</td>\n",
+              "      <td>29.85</td>\n",
+              "      <td>29.85</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>Male</td>\n",
+              "      <td>0</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>34</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>DSL</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>One year</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Mailed check</td>\n",
+              "      <td>56.95</td>\n",
+              "      <td>1889.50</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>Male</td>\n",
+              "      <td>0</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>2</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>DSL</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Month-to-month</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Mailed check</td>\n",
+              "      <td>53.85</td>\n",
+              "      <td>108.15</td>\n",
+              "      <td>Yes</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>Male</td>\n",
+              "      <td>0</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>45</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No phone service</td>\n",
+              "      <td>DSL</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>One year</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Bank transfer (automatic)</td>\n",
+              "      <td>42.30</td>\n",
+              "      <td>1840.75</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>Female</td>\n",
+              "      <td>0</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>2</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Fiber optic</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Month-to-month</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Electronic check</td>\n",
+              "      <td>70.70</td>\n",
+              "      <td>151.65</td>\n",
+              "      <td>Yes</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "   gender  SeniorCitizen Partner  ... MonthlyCharges  TotalCharges Churn\n",
+              "0  Female              0     Yes  ...          29.85         29.85    No\n",
+              "1    Male              0      No  ...          56.95       1889.50    No\n",
+              "2    Male              0      No  ...          53.85        108.15   Yes\n",
+              "3    Male              0      No  ...          42.30       1840.75    No\n",
+              "4  Female              0      No  ...          70.70        151.65   Yes\n",
+              "\n",
+              "[5 rows x 20 columns]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 34
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "aMfhomywPh6U"
+      },
+      "source": [
+        ""
+      ],
+      "execution_count": 81,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 352
+        },
+        "id": "2pnVsNfLP2V5",
+        "outputId": "ee8d6913-2745-4b02-ae35-e866bf052aa3"
+      },
+      "source": [
+        "tenure_no=df1[df1.Churn=='No'].tenure\r\n",
+        "tenure_yes=df1[df1.Churn=='Yes'].tenure\r\n",
+        "plt.hist([tenure_no,tenure_yes],label=['churn_yes','churn_no'])\r\n",
+        "plt.title(\"Customer Churn Prediction Visualiztion\")\r\n",
+        "plt.legend()"
+      ],
+      "execution_count": 91,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "/usr/local/lib/python3.6/dist-packages/numpy/core/_asarray.py:83: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray\n",
+            "  return array(a, dtype, copy=False, order=order)\n"
+          ],
+          "name": "stderr"
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<matplotlib.legend.Legend at 0x7f48d3d76cc0>"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 91
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "image/png": "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\n",
+            "text/plain": [
+              "<Figure size 432x288 with 1 Axes>"
+            ]
+          },
+          "metadata": {
+            "tags": [],
+            "needs_background": "light"
+          }
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 352
+        },
+        "id": "zwZ-LY2PQAuv",
+        "outputId": "95960564-cc5b-4ae1-8da7-ffb5b828d707"
+      },
+      "source": [
+        "mc_churn_no = df1[df1.Churn=='No'].MonthlyCharges      \r\n",
+        "mc_churn_yes = df1[df1.Churn=='Yes'].MonthlyCharges      \r\n",
+        "\r\n",
+        "plt.title(\"Customer Churn Prediction Visualiztion\")\r\n",
+        "\r\n",
+        "plt.hist([mc_churn_yes, mc_churn_no], rwidth=0.95, color=['green','red'],label=['Churn=Yes','Churn=No'])\r\n",
+        "plt.legend()"
+      ],
+      "execution_count": 93,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "/usr/local/lib/python3.6/dist-packages/numpy/core/_asarray.py:83: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray\n",
+            "  return array(a, dtype, copy=False, order=order)\n"
+          ],
+          "name": "stderr"
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<matplotlib.legend.Legend at 0x7f48d3d470f0>"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 93
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "image/png": "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Xnz+85/fUnbwwQczatQo3njjDU499VQOOOAATj/9dBp/TKq6upq1a7Mf4qqtrWX06NEAzJw5kzPOOIOjjjqKM844g5kzZ3LOOecwevRo9t13X66++up2tUkS1113HdOmTaO2tpaFCxfyta99jVtuuYWRI0cyYsQIPve5z7Fp0yY2bdrEWWedxYEHHshHP/pRZs2a1Snbxd07ZlaRli1bxmGHHdbsuCeeeIKnnnqKvffem6OOOopHHnmEo48+utX5LV++nIcffpiddtqJmTNn8swzz/DAAw/w+uuvs//++/OFL3yBXr16MWrUKF5/fetfAb3qqqs45phjOOiggzj22GMZO3Ys99xzD88//zxz587lkUceoVevXnzxi1/k1ltvZfjw4axcuZJly5YBsGHDhtI3Cg59M8uhkSNHUlVVBcCIESN48cUX2wz9k08+mZ122mnL8Pjx4+nduze9e/dmjz324JVXXqGqqoqHHnqozeWfd955/PrXv2b06NH86Ec/YvHixRx++OEAvPXWW+yxxx6cdNJJvPDCC3z5y19m/PjxjBs3roQ1/qc2u3ck3SBpjaRlzYz7iqSQtHsalqSrJdVJWirp0IK6kyU9lx6TO6X1ZmYtGD58OIsXL252XO/evbc879Gjx5Z++p49e7J582aAra5/32WXXdo1j1GjRjFixIitHo39+AA77LADO+yQxW9EMHnyZJYsWcKSJUt49tlnmTlzJv369ePJJ59k9OjRXHfddZx77rnFbor3aE+f/o3AcU0LJQ0GxgEvFxQfDwxNj6nAtanubsAM4GPASGCGpH6lNNzMrDVjxozhnXfeYfbs2VvKli5d2uqReHV19ZY3il/84hdFLfehhx7aEuCFj2OOOabZ+mPHjmXevHmsWbMGgPXr1/PSSy+xdu1aNm/ezKc+9Skuu+wyHn/88aLa01Sb3TsR8aCk6mZGzQIuBO4pKJsA3BTZWZFHJfWVtBcwGlgQEesBJC0geyO5raTWm9l2oz2XWHYmSdx9991MmzaNK6+8kj59+lBdXc3EiRNbnGbGjBlMmTKFr3/961tO4na1YcOGcdlllzFu3Dg2b95Mr169uOaaa9hpp504++yzt3zyuPzyyztleWo8a91qpSz0742IA9PwBGBMRJwv6UWgJiLWSroXuCIiHk71FgIXkYV+n4i4LJV/HXgrIq5qZllT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\n",
+            "text/plain": [
+              "<Figure size 432x288 with 1 Axes>"
+            ]
+          },
+          "metadata": {
+            "tags": [],
+            "needs_background": "light"
+          }
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "B39qt0FvZoOy"
+      },
+      "source": [
+        "def print_unique_col_values(df):\r\n",
+        "       for column in df:\r\n",
+        "            if df[column].dtypes=='object':\r\n",
+        "                print(f'{column}: {df[column].unique()}')\r\n"
+      ],
+      "execution_count": 94,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "kvlvHrwWZ_FX",
+        "outputId": "703b94be-a4f3-4e13-b043-5203bc02581c"
+      },
+      "source": [
+        "print_unique_col_values(df1)"
+      ],
+      "execution_count": 95,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "gender: ['Female' 'Male']\n",
+            "Partner: ['Yes' 'No']\n",
+            "Dependents: ['No' 'Yes']\n",
+            "PhoneService: ['No' 'Yes']\n",
+            "MultipleLines: ['No phone service' 'No' 'Yes']\n",
+            "InternetService: ['DSL' 'Fiber optic' 'No']\n",
+            "OnlineSecurity: ['No' 'Yes' 'No internet service']\n",
+            "OnlineBackup: ['Yes' 'No' 'No internet service']\n",
+            "DeviceProtection: ['No' 'Yes' 'No internet service']\n",
+            "TechSupport: ['No' 'Yes' 'No internet service']\n",
+            "StreamingTV: ['No' 'Yes' 'No internet service']\n",
+            "StreamingMovies: ['No' 'Yes' 'No internet service']\n",
+            "Contract: ['Month-to-month' 'One year' 'Two year']\n",
+            "PaperlessBilling: ['Yes' 'No']\n",
+            "PaymentMethod: ['Electronic check' 'Mailed check' 'Bank transfer (automatic)'\n",
+            " 'Credit card (automatic)']\n",
+            "Churn: ['No' 'Yes']\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "M2jNQ9MOaDKE"
+      },
+      "source": [
+        "df1.replace('No internet service','No',inplace=True)\r\n",
+        "df1.replace('No phone service','No',inplace=True)"
+      ],
+      "execution_count": 96,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "rw3nS0NpaHnZ",
+        "outputId": "3714c3b7-9d37-4071-e6e9-9e40c41bcc46"
+      },
+      "source": [
+        "print_unique_col_values(df1)"
+      ],
+      "execution_count": 97,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "gender: ['Female' 'Male']\n",
+            "Partner: ['Yes' 'No']\n",
+            "Dependents: ['No' 'Yes']\n",
+            "PhoneService: ['No' 'Yes']\n",
+            "MultipleLines: ['No' 'Yes']\n",
+            "InternetService: ['DSL' 'Fiber optic' 'No']\n",
+            "OnlineSecurity: ['No' 'Yes']\n",
+            "OnlineBackup: ['Yes' 'No']\n",
+            "DeviceProtection: ['No' 'Yes']\n",
+            "TechSupport: ['No' 'Yes']\n",
+            "StreamingTV: ['No' 'Yes']\n",
+            "StreamingMovies: ['No' 'Yes']\n",
+            "Contract: ['Month-to-month' 'One year' 'Two year']\n",
+            "PaperlessBilling: ['Yes' 'No']\n",
+            "PaymentMethod: ['Electronic check' 'Mailed check' 'Bank transfer (automatic)'\n",
+            " 'Credit card (automatic)']\n",
+            "Churn: ['No' 'Yes']\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "1emOllyHaKbc"
+      },
+      "source": [
+        "yes_no_columns = ['Partner','Dependents','PhoneService','MultipleLines','OnlineSecurity','OnlineBackup',\r\n",
+        "                  'DeviceProtection','TechSupport','StreamingTV','StreamingMovies','PaperlessBilling','Churn']\r\n",
+        "for col in yes_no_columns:\r\n",
+        "    df1[col].replace({'Yes': 1,'No': 0},inplace=True)"
+      ],
+      "execution_count": 98,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "vENMDU7-aqyV",
+        "outputId": "b64c55e7-e84d-4797-f489-57d5337587c1"
+      },
+      "source": [
+        "print_unique_col_values(df1)"
+      ],
+      "execution_count": 99,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "gender: ['Female' 'Male']\n",
+            "InternetService: ['DSL' 'Fiber optic' 'No']\n",
+            "Contract: ['Month-to-month' 'One year' 'Two year']\n",
+            "PaymentMethod: ['Electronic check' 'Mailed check' 'Bank transfer (automatic)'\n",
+            " 'Credit card (automatic)']\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "vkGMToZ2auwC",
+        "outputId": "b884b426-a48e-4cbe-d7d6-6767b99b288c"
+      },
+      "source": [
+        "for col in df1:\r\n",
+        "    print(f'{col}: {df1[col].unique()}')"
+      ],
+      "execution_count": 100,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "gender: ['Female' 'Male']\n",
+            "SeniorCitizen: [0 1]\n",
+            "Partner: [1 0]\n",
+            "Dependents: [0 1]\n",
+            "tenure: [ 1 34  2 45  8 22 10 28 62 13 16 58 49 25 69 52 71 21 12 30 47 72 17 27\n",
+            "  5 46 11 70 63 43 15 60 18 66  9  3 31 50 64 56  7 42 35 48 29 65 38 68\n",
+            " 32 55 37 36 41  6  4 33 67 23 57 61 14 20 53 40 59 24 44 19 54 51 26 39]\n",
+            "PhoneService: [0 1]\n",
+            "MultipleLines: [0 1]\n",
+            "InternetService: ['DSL' 'Fiber optic' 'No']\n",
+            "OnlineSecurity: [0 1]\n",
+            "OnlineBackup: [1 0]\n",
+            "DeviceProtection: [0 1]\n",
+            "TechSupport: [0 1]\n",
+            "StreamingTV: [0 1]\n",
+            "StreamingMovies: [0 1]\n",
+            "Contract: ['Month-to-month' 'One year' 'Two year']\n",
+            "PaperlessBilling: [1 0]\n",
+            "PaymentMethod: ['Electronic check' 'Mailed check' 'Bank transfer (automatic)'\n",
+            " 'Credit card (automatic)']\n",
+            "MonthlyCharges: [29.85 56.95 53.85 ... 63.1  44.2  78.7 ]\n",
+            "TotalCharges: [  29.85 1889.5   108.15 ...  346.45  306.6  6844.5 ]\n",
+            "Churn: [0 1]\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "pSnGDC7JbAWt"
+      },
+      "source": [
+        "df1['gender'].replace({'Female':1,'Male':0},inplace=True)"
+      ],
+      "execution_count": 101,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "d9fOq6rvbMeQ",
+        "outputId": "c69d74e0-a920-4090-981b-7eaa4376d98c"
+      },
+      "source": [
+        "for col in df1:\r\n",
+        "    print(f'{col}: {df1[col].unique()}')"
+      ],
+      "execution_count": 102,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "gender: [1 0]\n",
+            "SeniorCitizen: [0 1]\n",
+            "Partner: [1 0]\n",
+            "Dependents: [0 1]\n",
+            "tenure: [ 1 34  2 45  8 22 10 28 62 13 16 58 49 25 69 52 71 21 12 30 47 72 17 27\n",
+            "  5 46 11 70 63 43 15 60 18 66  9  3 31 50 64 56  7 42 35 48 29 65 38 68\n",
+            " 32 55 37 36 41  6  4 33 67 23 57 61 14 20 53 40 59 24 44 19 54 51 26 39]\n",
+            "PhoneService: [0 1]\n",
+            "MultipleLines: [0 1]\n",
+            "InternetService: ['DSL' 'Fiber optic' 'No']\n",
+            "OnlineSecurity: [0 1]\n",
+            "OnlineBackup: [1 0]\n",
+            "DeviceProtection: [0 1]\n",
+            "TechSupport: [0 1]\n",
+            "StreamingTV: [0 1]\n",
+            "StreamingMovies: [0 1]\n",
+            "Contract: ['Month-to-month' 'One year' 'Two year']\n",
+            "PaperlessBilling: [1 0]\n",
+            "PaymentMethod: ['Electronic check' 'Mailed check' 'Bank transfer (automatic)'\n",
+            " 'Credit card (automatic)']\n",
+            "MonthlyCharges: [29.85 56.95 53.85 ... 63.1  44.2  78.7 ]\n",
+            "TotalCharges: [  29.85 1889.5   108.15 ...  346.45  306.6  6844.5 ]\n",
+            "Churn: [0 1]\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 258
+        },
+        "id": "aO3buvMobO2g",
+        "outputId": "9f541fbf-532e-414d-dad5-43ea2f377ef7"
+      },
+      "source": [
+        "df2 = pd.get_dummies(data=df1, columns=['InternetService','Contract','PaymentMethod'])\r\n",
+        "df2.head()"
+      ],
+      "execution_count": 107,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>gender</th>\n",
+              "      <th>SeniorCitizen</th>\n",
+              "      <th>Partner</th>\n",
+              "      <th>Dependents</th>\n",
+              "      <th>tenure</th>\n",
+              "      <th>PhoneService</th>\n",
+              "      <th>MultipleLines</th>\n",
+              "      <th>OnlineSecurity</th>\n",
+              "      <th>OnlineBackup</th>\n",
+              "      <th>DeviceProtection</th>\n",
+              "      <th>TechSupport</th>\n",
+              "      <th>StreamingTV</th>\n",
+              "      <th>StreamingMovies</th>\n",
+              "      <th>PaperlessBilling</th>\n",
+              "      <th>MonthlyCharges</th>\n",
+              "      <th>TotalCharges</th>\n",
+              "      <th>Churn</th>\n",
+              "      <th>InternetService_DSL</th>\n",
+              "      <th>InternetService_Fiber optic</th>\n",
+              "      <th>InternetService_No</th>\n",
+              "      <th>Contract_Month-to-month</th>\n",
+              "      <th>Contract_One year</th>\n",
+              "      <th>Contract_Two year</th>\n",
+              "      <th>PaymentMethod_Bank transfer (automatic)</th>\n",
+              "      <th>PaymentMethod_Credit card (automatic)</th>\n",
+              "      <th>PaymentMethod_Electronic check</th>\n",
+              "      <th>PaymentMethod_Mailed check</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>29.85</td>\n",
+              "      <td>29.85</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>34</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>56.95</td>\n",
+              "      <td>1889.50</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>2</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>53.85</td>\n",
+              "      <td>108.15</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>45</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>42.30</td>\n",
+              "      <td>1840.75</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>2</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>70.70</td>\n",
+              "      <td>151.65</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "   gender  ...  PaymentMethod_Mailed check\n",
+              "0       1  ...                           0\n",
+              "1       0  ...                           1\n",
+              "2       0  ...                           1\n",
+              "3       0  ...                           0\n",
+              "4       1  ...                           0\n",
+              "\n",
+              "[5 rows x 27 columns]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 107
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "woA2EaZhbg9b"
+      },
+      "source": [
+        "cols_to_scale = ['tenure','MonthlyCharges','TotalCharges']\r\n",
+        "\r\n",
+        "from sklearn.preprocessing import MinMaxScaler\r\n",
+        "scaler = MinMaxScaler()\r\n",
+        "df2[cols_to_scale] = scaler.fit_transform(df2[cols_to_scale])"
+      ],
+      "execution_count": 108,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Y-wqvcqBigUL",
+        "outputId": "02e62e7b-5245-41d8-88d6-e4066979ca98"
+      },
+      "source": [
+        "for col in df2:\r\n",
+        "    print(f'{col}: {df2[col].unique()}')"
+      ],
+      "execution_count": 109,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "gender: [1 0]\n",
+            "SeniorCitizen: [0 1]\n",
+            "Partner: [1 0]\n",
+            "Dependents: [0 1]\n",
+            "tenure: [0.         0.46478873 0.01408451 0.61971831 0.09859155 0.29577465\n",
+            " 0.12676056 0.38028169 0.85915493 0.16901408 0.21126761 0.8028169\n",
+            " 0.67605634 0.33802817 0.95774648 0.71830986 0.98591549 0.28169014\n",
+            " 0.15492958 0.4084507  0.64788732 1.         0.22535211 0.36619718\n",
+            " 0.05633803 0.63380282 0.14084507 0.97183099 0.87323944 0.5915493\n",
+            " 0.1971831  0.83098592 0.23943662 0.91549296 0.11267606 0.02816901\n",
+            " 0.42253521 0.69014085 0.88732394 0.77464789 0.08450704 0.57746479\n",
+            " 0.47887324 0.66197183 0.3943662  0.90140845 0.52112676 0.94366197\n",
+            " 0.43661972 0.76056338 0.50704225 0.49295775 0.56338028 0.07042254\n",
+            " 0.04225352 0.45070423 0.92957746 0.30985915 0.78873239 0.84507042\n",
+            " 0.18309859 0.26760563 0.73239437 0.54929577 0.81690141 0.32394366\n",
+            " 0.6056338  0.25352113 0.74647887 0.70422535 0.35211268 0.53521127]\n",
+            "PhoneService: [0 1]\n",
+            "MultipleLines: [0 1]\n",
+            "OnlineSecurity: [0 1]\n",
+            "OnlineBackup: [1 0]\n",
+            "DeviceProtection: [0 1]\n",
+            "TechSupport: [0 1]\n",
+            "StreamingTV: [0 1]\n",
+            "StreamingMovies: [0 1]\n",
+            "PaperlessBilling: [1 0]\n",
+            "MonthlyCharges: [0.11542289 0.38507463 0.35422886 ... 0.44626866 0.25820896 0.60149254]\n",
+            "TotalCharges: [0.0012751  0.21586661 0.01031041 ... 0.03780868 0.03321025 0.78764136]\n",
+            "Churn: [0 1]\n",
+            "InternetService_DSL: [1 0]\n",
+            "InternetService_Fiber optic: [0 1]\n",
+            "InternetService_No: [0 1]\n",
+            "Contract_Month-to-month: [1 0]\n",
+            "Contract_One year: [0 1]\n",
+            "Contract_Two year: [0 1]\n",
+            "PaymentMethod_Bank transfer (automatic): [0 1]\n",
+            "PaymentMethod_Credit card (automatic): [0 1]\n",
+            "PaymentMethod_Electronic check: [1 0]\n",
+            "PaymentMethod_Mailed check: [0 1]\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "wxtsRvQfijke"
+      },
+      "source": [
+        "X = df2.drop('Churn',axis='columns')\r\n",
+        "y = df2['Churn']\r\n",
+        "\r\n",
+        "from sklearn.model_selection import train_test_split\r\n",
+        "X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=5)"
+      ],
+      "execution_count": 110,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "e7hH1d7liqNS",
+        "outputId": "fd1bf36b-5f03-45a0-9f0b-9f5ee3045292"
+      },
+      "source": [
+        "X_train.shape\r\n",
+        "X_test.shape"
+      ],
+      "execution_count": 111,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "(1407, 26)"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 111
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "QAegTvddivDs",
+        "outputId": "c3e1dbf8-a47e-4ab5-bb90-d2608a96d74a"
+      },
+      "source": [
+        "import tensorflow as tf\r\n",
+        "from tensorflow import keras\r\n",
+        "\r\n",
+        "\r\n",
+        "model = keras.Sequential([\r\n",
+        "    keras.layers.Dense(26, input_shape=(26,), activation='relu'),\r\n",
+        "    keras.layers.Dense(15, activation='relu'),\r\n",
+        "    keras.layers.Dense(1, activation='sigmoid')\r\n",
+        "])\r\n",
+        "\r\n",
+        "# opt = keras.optimizers.Adam(learning_rate=0.01)\r\n",
+        "\r\n",
+        "model.compile(optimizer='adam',\r\n",
+        "              loss='binary_crossentropy',\r\n",
+        "              metrics=['accuracy'])\r\n",
+        "\r\n",
+        "model.fit(X_train, y_train, epochs=100)"
+      ],
+      "execution_count": 112,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Epoch 1/100\n",
+            "176/176 [==============================] - 1s 1ms/step - loss: 0.5660 - accuracy: 0.7054\n",
+            "Epoch 2/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.4333 - accuracy: 0.7909\n",
+            "Epoch 3/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.4123 - accuracy: 0.8126\n",
+            "Epoch 4/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.4212 - accuracy: 0.7993\n",
+            "Epoch 5/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.4036 - accuracy: 0.8141\n",
+            "Epoch 6/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.4133 - accuracy: 0.7971\n",
+            "Epoch 7/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.4094 - accuracy: 0.8049\n",
+            "Epoch 8/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.4102 - accuracy: 0.8007\n",
+            "Epoch 9/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.4070 - accuracy: 0.8015\n",
+            "Epoch 10/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3987 - accuracy: 0.8087\n",
+            "Epoch 11/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.4105 - accuracy: 0.8065\n",
+            "Epoch 12/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3944 - accuracy: 0.8212\n",
+            "Epoch 13/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.4054 - accuracy: 0.8072\n",
+            "Epoch 14/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.4002 - accuracy: 0.8101\n",
+            "Epoch 15/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3951 - accuracy: 0.8174\n",
+            "Epoch 16/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3961 - accuracy: 0.8156\n",
+            "Epoch 17/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3874 - accuracy: 0.8219\n",
+            "Epoch 18/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3946 - accuracy: 0.8119\n",
+            "Epoch 19/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3932 - accuracy: 0.8076\n",
+            "Epoch 20/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3969 - accuracy: 0.8153\n",
+            "Epoch 21/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3890 - accuracy: 0.8164\n",
+            "Epoch 22/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3789 - accuracy: 0.8244\n",
+            "Epoch 23/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3807 - accuracy: 0.8221\n",
+            "Epoch 24/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3930 - accuracy: 0.8117\n",
+            "Epoch 25/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3856 - accuracy: 0.8244\n",
+            "Epoch 26/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3797 - accuracy: 0.8158\n",
+            "Epoch 27/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3894 - accuracy: 0.8174\n",
+            "Epoch 28/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3783 - accuracy: 0.8177\n",
+            "Epoch 29/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3915 - accuracy: 0.8147\n",
+            "Epoch 30/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3788 - accuracy: 0.8172\n",
+            "Epoch 31/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3784 - accuracy: 0.8214\n",
+            "Epoch 32/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3757 - accuracy: 0.8257\n",
+            "Epoch 33/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3807 - accuracy: 0.8195\n",
+            "Epoch 34/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3809 - accuracy: 0.8176\n",
+            "Epoch 35/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3812 - accuracy: 0.8208\n",
+            "Epoch 36/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3759 - accuracy: 0.8226\n",
+            "Epoch 37/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3743 - accuracy: 0.8242\n",
+            "Epoch 38/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3686 - accuracy: 0.8290\n",
+            "Epoch 39/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3657 - accuracy: 0.8249\n",
+            "Epoch 40/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3819 - accuracy: 0.8192\n",
+            "Epoch 41/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3637 - accuracy: 0.8291\n",
+            "Epoch 42/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3703 - accuracy: 0.8219\n",
+            "Epoch 43/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3652 - accuracy: 0.8260\n",
+            "Epoch 44/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3734 - accuracy: 0.8226\n",
+            "Epoch 45/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3729 - accuracy: 0.8219\n",
+            "Epoch 46/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3729 - accuracy: 0.8262\n",
+            "Epoch 47/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3687 - accuracy: 0.8199\n",
+            "Epoch 48/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3721 - accuracy: 0.8258\n",
+            "Epoch 49/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3740 - accuracy: 0.8207\n",
+            "Epoch 50/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3794 - accuracy: 0.8202\n",
+            "Epoch 51/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3647 - accuracy: 0.8300\n",
+            "Epoch 52/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3637 - accuracy: 0.8326\n",
+            "Epoch 53/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3604 - accuracy: 0.8256\n",
+            "Epoch 54/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3584 - accuracy: 0.8364\n",
+            "Epoch 55/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3557 - accuracy: 0.8328\n",
+            "Epoch 56/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3617 - accuracy: 0.8285\n",
+            "Epoch 57/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3560 - accuracy: 0.8323\n",
+            "Epoch 58/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3638 - accuracy: 0.8198\n",
+            "Epoch 59/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3556 - accuracy: 0.8306\n",
+            "Epoch 60/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3605 - accuracy: 0.8286\n",
+            "Epoch 61/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3605 - accuracy: 0.8315\n",
+            "Epoch 62/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3428 - accuracy: 0.8402\n",
+            "Epoch 63/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3576 - accuracy: 0.8293\n",
+            "Epoch 64/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3698 - accuracy: 0.8194\n",
+            "Epoch 65/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3534 - accuracy: 0.8315\n",
+            "Epoch 66/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3578 - accuracy: 0.8251\n",
+            "Epoch 67/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3592 - accuracy: 0.8343\n",
+            "Epoch 68/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3631 - accuracy: 0.8190\n",
+            "Epoch 69/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3675 - accuracy: 0.8339\n",
+            "Epoch 70/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3478 - accuracy: 0.8328\n",
+            "Epoch 71/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3592 - accuracy: 0.8279\n",
+            "Epoch 72/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3537 - accuracy: 0.8354\n",
+            "Epoch 73/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3611 - accuracy: 0.8227\n",
+            "Epoch 74/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3667 - accuracy: 0.8230\n",
+            "Epoch 75/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3638 - accuracy: 0.8267\n",
+            "Epoch 76/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3591 - accuracy: 0.8284\n",
+            "Epoch 77/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3568 - accuracy: 0.8239\n",
+            "Epoch 78/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3568 - accuracy: 0.8289\n",
+            "Epoch 79/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3505 - accuracy: 0.8342\n",
+            "Epoch 80/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3462 - accuracy: 0.8326\n",
+            "Epoch 81/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3607 - accuracy: 0.8255\n",
+            "Epoch 82/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3517 - accuracy: 0.8397\n",
+            "Epoch 83/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3503 - accuracy: 0.8374\n",
+            "Epoch 84/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3382 - accuracy: 0.8395\n",
+            "Epoch 85/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3617 - accuracy: 0.8319\n",
+            "Epoch 86/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3506 - accuracy: 0.8359\n",
+            "Epoch 87/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3419 - accuracy: 0.8369\n",
+            "Epoch 88/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3545 - accuracy: 0.8326\n",
+            "Epoch 89/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3562 - accuracy: 0.8307\n",
+            "Epoch 90/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3571 - accuracy: 0.8281\n",
+            "Epoch 91/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3463 - accuracy: 0.8369\n",
+            "Epoch 92/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3422 - accuracy: 0.8331\n",
+            "Epoch 93/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3482 - accuracy: 0.8342\n",
+            "Epoch 94/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3404 - accuracy: 0.8367\n",
+            "Epoch 95/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3522 - accuracy: 0.8332\n",
+            "Epoch 96/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3382 - accuracy: 0.8366\n",
+            "Epoch 97/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3524 - accuracy: 0.8358\n",
+            "Epoch 98/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3451 - accuracy: 0.8387\n",
+            "Epoch 99/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3373 - accuracy: 0.8391\n",
+            "Epoch 100/100\n",
+            "176/176 [==============================] - 0s 1ms/step - loss: 0.3502 - accuracy: 0.8368\n"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<tensorflow.python.keras.callbacks.History at 0x7f489f82d828>"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 112
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "VxfeNND9i2Iq",
+        "outputId": "df5e0710-c053-483c-bb46-892cdf73c2b4"
+      },
+      "source": [
+        "model.evaluate(X_test, y_test)"
+      ],
+      "execution_count": 113,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "44/44 [==============================] - 0s 864us/step - loss: 0.4879 - accuracy: 0.7761\n"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[0.4878794550895691, 0.7761194109916687]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 113
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "MuuYAoaejH8Q",
+        "outputId": "26ee7a65-dde6-4bc6-8eee-5ba408f5c5c7"
+      },
+      "source": [
+        "y_test.shape"
+      ],
+      "execution_count": 114,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "(1407,)"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 114
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "aNtuqRumjJpr"
+      },
+      "source": [
+        "yp=model.predict(X_test)"
+      ],
+      "execution_count": 116,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "fS-5DBufjTRf",
+        "outputId": "6abc055b-4ff0-499b-aaac-3e886396f9e6"
+      },
+      "source": [
+        "yp.shape"
+      ],
+      "execution_count": 118,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "(1407, 1)"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 118
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "1SJvjfLQjPdU"
+      },
+      "source": [
+        "y_pred = []\r\n",
+        "for element in yp:\r\n",
+        "    if element > 0.5:\r\n",
+        "        y_pred.append(1)\r\n",
+        "    else:\r\n",
+        "        y_pred.append(0)"
+      ],
+      "execution_count": 119,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "WqTX05Hejc64",
+        "outputId": "212a58cb-039a-400f-e2e9-cc728879c614"
+      },
+      "source": [
+        "from sklearn.metrics import confusion_matrix , classification_report\r\n",
+        "\r\n",
+        "print(classification_report(y_test,y_pred))"
+      ],
+      "execution_count": 120,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "              precision    recall  f1-score   support\n",
+            "\n",
+            "           0       0.81      0.89      0.85       999\n",
+            "           1       0.65      0.49      0.56       408\n",
+            "\n",
+            "    accuracy                           0.78      1407\n",
+            "   macro avg       0.73      0.69      0.70      1407\n",
+            "weighted avg       0.76      0.78      0.77      1407\n",
+            "\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 445
+        },
+        "id": "9UIXYV34jiIB",
+        "outputId": "7460d2e0-ee74-4407-ca79-ce2ff7fe9bab"
+      },
+      "source": [
+        "import seaborn as sn\r\n",
+        "cm = tf.math.confusion_matrix(labels=y_test,predictions=y_pred)\r\n",
+        "\r\n",
+        "plt.figure(figsize = (10,7))\r\n",
+        "sn.heatmap(cm, annot=True, fmt='d')\r\n"
+      ],
+      "execution_count": 123,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<matplotlib.axes._subplots.AxesSubplot at 0x7f489371fe10>"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 123
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "image/png": "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\n",
+            "text/plain": [
+              "<Figure size 720x504 with 2 Axes>"
+            ]
+          },
+          "metadata": {
+            "tags": [],
+            "needs_background": "light"
+          }
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "AchdXI1Yjlbi",
+        "outputId": "dfb96000-7113-4a73-f0d5-fc24c5a6ba33"
+      },
+      "source": [
+        "## accuracy\r\n",
+        "(893+199)/(893+106+209+199)\r\n"
+      ],
+      "execution_count": 126,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.7761194029850746"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 126
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "nt-VIWvkjyfo"
+      },
+      "source": [
+        ""
+      ],
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
