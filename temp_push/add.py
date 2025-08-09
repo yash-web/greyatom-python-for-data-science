@@ -8,8 +8,4 @@ class addition():
 
         print("came into init function")
 
-
-    def add(self,x1,y1):
-
-        print("temp_merge code")
-        return x1+y1    
+   
